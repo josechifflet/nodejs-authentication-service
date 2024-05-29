@@ -19,7 +19,7 @@ const options = (filename: string): LoggerOptions => ({
   // Store all logs in files. Will be created automatically as long as it does not break any permissions.
   transports: [
     new winston.transports.File({
-      filename: path.join(__dirname, '..', '..', 'logs', filename),
+      filename: path.join(__dirname, '..', '..', '..', 'logs', filename),
     }),
   ],
 
