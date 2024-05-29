@@ -16,7 +16,7 @@
     "otp-speed": "yarn node-esm cli/otp-speed",
     "match-totps": "yarn node-esm cli/match-totps",
     "dev": "yarn node-esm src/index.ts",
-    "start": "NODE_ENV=production node dist/index.js",
+    "start:prod": "NODE_ENV=production node dist/index.js",
     "prettier-check": "prettier --check src cli",
     "prettier-write": "prettier --write src cli",
     "eslint-check": "eslint src cli",
