@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from 'express';
 
-import AppError from '../../util/app-error';
+import AppError from '@/util/app-error';
 
 /**
  * If consumer does not pass the `X-Requested-With` header, then

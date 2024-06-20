@@ -1,8 +1,8 @@
 import type { NextFunction, Request, Response } from 'express';
 
-import AppError from '../../util/app-error';
-import sendResponse from '../../util/send-response';
-import CacheService from '../cache/service';
+import AppError from '@/util/app-error';
+import sendResponse from '@/util/send-response';
+import CacheService from '@/modules/cache/service';
 
 /**
  * Handle all requests from 'SessionHandler'.

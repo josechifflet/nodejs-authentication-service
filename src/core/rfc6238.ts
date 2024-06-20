@@ -1,7 +1,7 @@
 import * as OTPAuth from 'otpauth';
 
-import config from '../config';
-import safeCompare from '../util/safe-compare';
+import config from '@/config';
+import safeCompare from '@/util/safe-compare';
 import { b32FromBuf, b32ToBuf } from './util/base32';
 import hmacDigest from './util/hmac-digest';
 import numberToBuf from './util/number-to-buf';

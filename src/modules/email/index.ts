@@ -3,8 +3,8 @@ import nodemailer from 'nodemailer';
 import path from 'path';
 import { renderFile } from 'pug';
 
-import config from '../../config';
-import bull from '../../infra/bull';
+import config from '@/config';
+import bull from '@/infra/bull';
 
 /**
  * Class for method reusability. Email is usually pushed to a Bull queue

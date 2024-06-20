@@ -3,9 +3,9 @@ import type { NextFunction, Request, Response } from 'express';
 import type { CookieOptions } from 'express-session';
 import expressSession from 'express-session';
 
-import config from '../../config';
-import redis from '../../infra/redis';
-import isHTTPS from '../../util/is-https';
+import config from '@/config';
+import redis from '@/infra/redis';
+import isHTTPS from '@/util/is-https';
 
 /**
  * Initializes a session middleware for use.

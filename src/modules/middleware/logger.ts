@@ -4,7 +4,7 @@ import path from 'path';
 import winston from 'winston';
 import { fileURLToPath } from 'url';
 
-import getDeviceID from '../../util/device-id';
+import getDeviceID from '@/util/device-id';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

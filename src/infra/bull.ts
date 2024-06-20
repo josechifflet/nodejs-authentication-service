@@ -1,8 +1,8 @@
 import type { ConnectionOptions, Job } from 'bullmq';
 import { Queue, Worker } from 'bullmq';
 
-import config from '../config';
-import logger from '../util/logger';
+import config from '@/config';
+import logger from '@/util/logger';
 
 /**
  * Data type for our queue data.

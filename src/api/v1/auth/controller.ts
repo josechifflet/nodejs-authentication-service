@@ -1,20 +1,20 @@
 import type { NextFunction, Request, Response } from 'express';
 import { nanoid } from 'nanoid';
 
-import config from '../../config';
-import { generateDefaultTOTP, validateDefaultTOTP } from '../../core/rfc6238';
-import { parseBasicAuth } from '../../core/rfc7617';
-import AppError from '../../util/app-error';
-import setCookie from '../../util/cookies';
-import getDeviceID from '../../util/device-id';
-import { extractJWT, signJWS, verifyToken } from '../../util/jwt';
-import { verifyPassword } from '../../util/passwords';
-import randomBytes from '../../util/random-bytes';
-import safeCompare from '../../util/safe-compare';
-import sendResponse from '../../util/send-response';
-import CacheService from '../cache/service';
-import Email from '../email';
-import UserService from '../user/service';
+import config from '@/config';
+import { generateDefaultTOTP, validateDefaultTOTP } from '@/core/rfc6238';
+import { parseBasicAuth } from '@/core/rfc7617';
+import AppError from '@/util/app-error';
+import setCookie from '@/util/cookies';
+import getDeviceID from '@/util/device-id';
+import { extractJWT, signJWS, verifyToken } from '@/util/jwt';
+import { verifyPassword } from '@/util/passwords';
+import randomBytes from '@/util/random-bytes';
+import safeCompare from '@/util/safe-compare';
+import sendResponse from '@/util/send-response';
+import CacheService from '@/modules/cache/service';
+import Email from '@/modules/email';
+import UserService from '@/api/v1/user/service';
 
 /**
  * Utility function to set `Authenticate` header with the proper `Realm`. Why

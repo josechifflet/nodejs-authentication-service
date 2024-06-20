@@ -1,6 +1,6 @@
 import IORedis, { Redis } from 'ioredis';
 
-import config from '../config';
+import config from '@/config';
 
 class RedisService {
   private redis: Redis;

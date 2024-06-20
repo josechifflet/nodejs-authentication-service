@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from 'express';
 
-import AppError from '../../util/app-error';
+import AppError from '@/util/app-error';
 
 /**
  * Prevent Cross-Site Tracing by only allowing the following methods:

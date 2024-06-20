@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from 'express';
 import { json as parse } from 'express';
 
-import AppError from '../../util/app-error';
+import AppError from '@/util/app-error';
 
 /**
  * Parses the request body of a request. Do not use this middleware globally. Instead,

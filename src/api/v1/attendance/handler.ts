@@ -1,12 +1,12 @@
 import { Router } from 'express';
 
-import asyncHandler from '../../util/async-handler';
-import validate from '../../util/validate';
-import bodyParser from '../middleware/body-parser';
-import hasJWT from '../middleware/has-jwt';
-import hasRole from '../middleware/has-role';
-import hasSession from '../middleware/has-session';
-import rateLimit from '../middleware/rate-limit';
+import asyncHandler from '@/util/async-handler';
+import validate from '@/util/validate';
+import bodyParser from '@/modules/middleware/body-parser';
+import hasJWT from '@/modules/middleware/has-jwt';
+import hasRole from '@/modules/middleware/has-role';
+import hasSession from '@/modules/middleware/has-session';
+import rateLimit from '@/modules/middleware/rate-limit';
 import AttendanceController from './controller';
 import AttendanceValidation from './validation';
 

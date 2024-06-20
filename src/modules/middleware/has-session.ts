@@ -1,8 +1,8 @@
 import type { NextFunction, Request, Response } from 'express';
 
-import AppError from '../../util/app-error';
-import getDeviceID from '../../util/device-id';
-import UserService from '../user/service';
+import AppError from '@/util/app-error';
+import getDeviceID from '@/util/device-id';
+import UserService from '@/api/v1/user/service';
 
 /**
  * Validates whether a user is authenticated or not (via sessions).

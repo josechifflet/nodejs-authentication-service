@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
 import { Router } from 'express';
 
-import sendResponse from '../../util/send-response';
+import sendResponse from '@/util/send-response';
 
 /**
  * Handler to check the health of the service.

@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client';
 
-import prisma from '../../infra/prisma';
+import prisma from '../../../infra/prisma';
 
 /**
  * All of the return types will return these attributes. This is the default

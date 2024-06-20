@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from 'express';
 import toobusy from 'toobusy-js';
 
-import AppError from '../../util/app-error';
+import AppError from '@/util/app-error';
 
 /**
  * Checks whether the server is too busy or not. If the server is busy

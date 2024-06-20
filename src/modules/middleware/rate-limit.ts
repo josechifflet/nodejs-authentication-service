@@ -2,8 +2,8 @@ import type { NextFunction, Request, Response } from 'express';
 import rateLimiter from 'express-rate-limit';
 import RedisStore from 'rate-limit-redis';
 
-import redis from '../../infra/redis';
-import AppError from '../../util/app-error';
+import redis from '@/infra/redis';
+import AppError from '@/util/app-error';
 
 /**
  * Prepares and configures a rate limiter to be used in endpoints to prevent SPAM.

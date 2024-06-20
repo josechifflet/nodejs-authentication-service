@@ -1,6 +1,6 @@
 import type { SessionData } from 'express-session';
 
-import redis from '../../infra/redis';
+import redis from '@/infra/redis';
 
 /**
  * Session type from Express.js, plus the session ID for easier

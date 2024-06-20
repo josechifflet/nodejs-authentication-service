@@ -1,7 +1,7 @@
 import expressSlowDown from 'express-slow-down';
 import RedisStore from 'rate-limit-redis';
 
-import redis from '../../infra/redis';
+import redis from '@/infra/redis';
 
 /**
  * Creates an instance of `express-slow-down` with Redis to be used globally.

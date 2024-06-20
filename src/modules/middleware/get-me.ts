@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from 'express';
 
-import AppError from '../../util/app-error';
+import AppError from '@/util/app-error';
 
 /**
  * Moves a user's ID to the 'params' object.

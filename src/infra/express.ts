@@ -4,22 +4,22 @@ import helmet from 'helmet';
 import hpp from 'hpp';
 import morgan from 'morgan';
 
-import config from '../config';
-import AttendanceHandler from '../modules/attendance/handler';
-import AuthHandler from '../modules/auth/handler';
-import errorHandler from '../modules/error';
-import HealthHandler from '../modules/health/handler';
-import accept from '../modules/middleware/accept';
-import busyHandler from '../modules/middleware/busy-handler';
-import favicon from '../modules/middleware/favicon';
-import { errorLogger, successLogger } from '../modules/middleware/logger';
-import notFound from '../modules/middleware/not-found';
-import session from '../modules/middleware/session';
-import slowDown from '../modules/middleware/slow-down';
-import xRequestedWith from '../modules/middleware/x-requested-with';
-import xst from '../modules/middleware/xst';
-import SessionHandler from '../modules/session/handler';
-import UserHandler from '../modules/user/handler';
+import config from '@/config';
+import errorHandler from '@/modules/error';
+import accept from '@/modules/middleware/accept';
+import busyHandler from '@/modules/middleware/busy-handler';
+import favicon from '@/modules/middleware/favicon';
+import { errorLogger, successLogger } from '@/modules/middleware/logger';
+import notFound from '@/modules/middleware/not-found';
+import session from '@/modules/middleware/session';
+import slowDown from '@/modules/middleware/slow-down';
+import xRequestedWith from '@/modules/middleware/x-requested-with';
+import xst from '@/modules/middleware/xst';
+import AttendanceHandler from '@/api/v1/attendance/handler';
+import AuthHandler from '@/api/v1/auth/handler';
+import SessionHandler from '@/api/v1/session/handler';
+import UserHandler from '@/api/v1/user/handler';
+import HealthHandler from '@/api/v1/health/handler';
 
 /**
  * Loads an Express application.
@@ -92,10 +92,10 @@ function loadExpress() {
   // Define API routes. Throttle '/api' route to prevent spammers.
   app.use('/api', slowDown(75));
   app.use('/api/v1', healthHandler);
-  app.use('/api/v1/attendances', attendanceHandler);
+  app.use('/api/v1/attendance', attendanceHandler);
   app.use('/api/v1/auth', authHandler);
-  app.use('/api/v1/sessions', sessionHandler);
-  app.use('/api/v1/users', userHandler);
+  app.use('/api/v1/session', sessionHandler);
+  app.use('/api/v1/user', userHandler);
 
   // Catch-all routes for API.
   app.all('*', notFound());

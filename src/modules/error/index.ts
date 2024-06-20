@@ -7,9 +7,9 @@ import {
 import type { NextFunction, Request, Response } from 'express';
 import { errors as jose } from 'jose';
 
-import config from '../../config';
-import AppError from '../../util/app-error';
-import sendError from '../../util/send-error';
+import config from '@/config';
+import AppError from '@/util/app-error';
+import sendError from '@/util/send-error';
 import { ZodError } from 'zod';
 
 /**

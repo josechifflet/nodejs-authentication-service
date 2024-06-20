@@ -1,9 +1,9 @@
 import { Prisma } from '@prisma/client';
 import { nanoid } from 'nanoid';
 
-import { generateDefaultTOTP } from '../../core/rfc6238';
-import prisma from '../../infra/prisma';
-import { hashPassword } from '../../util/passwords';
+import { generateDefaultTOTP } from '@/core/rfc6238';
+import prisma from '../../../infra/prisma';
+import { hashPassword } from '@/util/passwords';
 
 /**
  * Almost all user operations return these attributes (usually exposed to the user as response),
