@@ -91,7 +91,7 @@ const SessionController = {
   getAllSessions: async (req: Request, res: Response) => {
     const sessions = await CacheService.getSessions();
 
-    return sendResponse({
+    sendResponse({
       req,
       res,
       status: 'success',
@@ -113,7 +113,7 @@ const SessionController = {
 
     const sessions = await CacheService.getUserSessions(id);
 
-    return sendResponse({
+    sendResponse({
       req,
       res,
       status: 'success',

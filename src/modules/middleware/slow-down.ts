@@ -1,5 +1,5 @@
 import expressSlowDown from 'express-slow-down';
-import RedisStore from 'rate-limit-redis';
+import { RedisStore } from 'rate-limit-redis';
 
 import redis from '@/infra/redis';
 

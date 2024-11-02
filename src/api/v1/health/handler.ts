@@ -15,7 +15,7 @@ const HealthHandler = () => {
    * Checks the health of the service.
    */
   router.get('/', (req: Request, res: Response) => {
-    return sendResponse({
+    sendResponse({
       req,
       res,
       status: 'success',

@@ -56,7 +56,7 @@ const UserController = {
       fullName,
     });
 
-    return sendResponse({
+    sendResponse({
       req,
       res,
       status: 'success',
@@ -141,7 +141,7 @@ const UserController = {
   getUser: async (req: Request, res: Response) => {
     const user = await UserService.getUser({ userID: req.params.id });
 
-    return sendResponse({
+    sendResponse({
       req,
       res,
       status: 'success',
@@ -161,7 +161,7 @@ const UserController = {
   getUsers: async (req: Request, res: Response) => {
     const users = await UserService.getUsers();
 
-    return sendResponse({
+    sendResponse({
       req,
       res,
       status: 'success',
@@ -229,7 +229,7 @@ const UserController = {
       },
     );
 
-    return sendResponse({
+    sendResponse({
       req,
       res,
       status: 'success',

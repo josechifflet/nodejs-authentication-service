@@ -41,7 +41,7 @@ const AttendanceController = {
         userPK: user.userPK,
       });
 
-      return sendResponse({
+      sendResponse({
         req,
         res,
         status: 'success',
@@ -53,7 +53,7 @@ const AttendanceController = {
     }
 
     const attendances = await AttendanceService.getAttendances();
-    return sendResponse({
+    sendResponse({
       req,
       res,
       status: 'success',
@@ -88,7 +88,7 @@ const AttendanceController = {
     const attendances = await AttendanceService.getAttendances({
       userPK: user.userPK,
     });
-    return sendResponse({
+    sendResponse({
       req,
       res,
       status: 'success',
@@ -119,7 +119,7 @@ const AttendanceController = {
       AttendanceService.checked(today, userID, 'out'),
     ]);
 
-    return sendResponse({
+    sendResponse({
       req,
       res,
       status: 'success',
@@ -176,7 +176,7 @@ const AttendanceController = {
     });
 
     // Send back response.
-    return sendResponse({
+    sendResponse({
       req,
       res,
       status: 'success',
@@ -243,7 +243,7 @@ const AttendanceController = {
       },
     );
 
-    return sendResponse({
+    sendResponse({
       req,
       res,
       status: 'success',

@@ -224,7 +224,7 @@ const AuthController = {
     await CacheService.setForgotPasswordAttempts(userByUsername.userID);
 
     // Send response.
-    return sendResponse({
+    sendResponse({
       req,
       res,
       status: 'success',
@@ -299,7 +299,7 @@ const AuthController = {
       });
 
       // Send response.
-      return sendResponse({
+      sendResponse({
         req,
         res,
         status: 'success',
@@ -333,15 +333,8 @@ const AuthController = {
         value: 'loggedOut',
         maxAge: 10,
       });
-      setCookie({
-        req,
-        res,
-        name: config.JWT_COOKIE_NAME,
-        value: 'loggedOut',
-        maxAge: 10,
-      });
 
-      return sendResponse({
+      sendResponse({
         req,
         res,
         status: 'success',
@@ -408,7 +401,7 @@ const AuthController = {
     // await new Email(email, username).sendConfirmation(link);
 
     // Send response.
-    return sendResponse({
+    sendResponse({
       req,
       res,
       status: 'success',
@@ -469,7 +462,7 @@ const AuthController = {
     await new Email(user.email, user.fullName).sendResetPassword();
 
     // Send response.
-    return sendResponse({
+    sendResponse({
       req,
       res,
       status: 'success',
@@ -543,7 +536,7 @@ const AuthController = {
     await CacheService.setHasAskedOTP(userID);
 
     // Send back response.
-    return sendResponse({
+    sendResponse({
       req,
       res,
       status: 'success',
@@ -583,7 +576,7 @@ const AuthController = {
     await UserService.updateUser({ userID }, { totpSecret: newSecret });
 
     // Send response.
-    return sendResponse({
+    sendResponse({
       req,
       res,
       status: 'success',
@@ -652,7 +645,7 @@ const AuthController = {
       await CacheService.deleteUserSessions(user.userID);
 
       // Send back response.
-      return sendResponse({
+      sendResponse({
         req,
         res,
         status: 'success',
@@ -698,7 +691,7 @@ const AuthController = {
     );
 
     // Send response.
-    return sendResponse({
+    sendResponse({
       req,
       res,
       status: 'success',
@@ -813,7 +806,7 @@ const AuthController = {
     });
 
     // Send response.
-    return sendResponse({
+    sendResponse({
       req,
       res,
       status: 'success',

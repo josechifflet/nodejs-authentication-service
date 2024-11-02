@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from 'express';
 import rateLimiter from 'express-rate-limit';
-import RedisStore from 'rate-limit-redis';
+import { RedisStore } from 'rate-limit-redis';
 
 import redis from '@/infra/redis';
 import AppError from '@/util/app-error';
