@@ -42,6 +42,9 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
 
+    /* Default */
+    "baseUrl": "./",
+
     /* Custom Paths */
     "paths": {
       "@/*": ["./src/*"],

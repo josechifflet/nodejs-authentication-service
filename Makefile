@@ -57,14 +57,14 @@ ci-run-unit: up-ci-env
 # Start development database
 up-dev:
 	@echo "Starting development database..."
-	docker-compose up -d postgres
-	docker-compose up -d redis
+	docker compose up -d postgres
+	docker compose up -d redis
 
 # Start CI environment database
 up-ci-env:
 	@echo "Setting up CI environment..."
 	./scripts/get-env-ci.sh codes-management-api/ci/env-variables .env.ci
-	docker-compose up -d postgres
+	docker compose up -d postgres
 
 # Pull the database schema
 db-pull:
@@ -98,7 +98,7 @@ run-integration-tests: up-ci-env
 # Tear down Docker containers and prune
 down:
 	@echo "Tearing down Docker containers and pruning..."
-	docker-compose down --remove-orphans -v
+	docker compose down --remove-orphans -v
 	docker system prune -a --volumes -f
 
 # Generate development wallet private key
