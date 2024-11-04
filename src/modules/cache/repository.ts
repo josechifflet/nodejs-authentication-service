@@ -1,12 +1,13 @@
-import type { SessionData } from 'express-session';
-
 import redis from '@/infra/redis';
 
 /**
  * Session type from Express.js, plus the session ID for easier
  * front-end processing.
  */
-type Session = SessionData & { sid: string };
+type Session = {
+  sid: string;
+  sessionInfo: Record<string, unknown>;
+} & Record<string, unknown>;
 
 /**
  * Fetches all related data that matches to an expression in Redis. Usually
@@ -62,6 +63,24 @@ const allSessions = async () => {
  * All cache operations in its low leveled form.
  */
 const CacheRepository = {
+  /**
+   * Gets the userID from the sessionID.
+   *
+   * @param sessionID - Session ID.
+   * @returns User ID.
+   */
+  getSession: async (sessionID: string) => redis.get(`sess:${sessionID}`),
+
+  /**
+   * Sets the userID to the sessionID in the Redis cache.
+   *
+   * @param sessionID - Session ID.
+   * @param userID - User ID.
+   * @returns Asynchronous 'OK'.
+   */
+  setSession: async (sessionID: string, userID: string) =>
+    redis.set(`sess:${sessionID}`, userID),
+
   /**
    * Sets an OTP to be blacklisted in the Redis cache for 120 seconds.
    *

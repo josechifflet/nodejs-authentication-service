@@ -1,11 +1,12 @@
 import { Router } from 'express';
 
-import asyncHandler from '@/util/async-handler';
-import validate from '@/util/validate';
 import getMe from '@/modules/middleware/get-me';
 import hasRole from '@/modules/middleware/has-role';
 import hasSession from '@/modules/middleware/has-session';
 import rateLimit from '@/modules/middleware/rate-limit';
+import asyncHandler from '@/util/async-handler';
+import validate from '@/util/validate';
+
 import SessionController from './controller';
 import SessionValidation from './validation';
 
@@ -21,6 +22,7 @@ const SessionHandler = () => {
   handler.use(rateLimit(100, 'sessions'));
 
   // Only allow below handlers for authenticated users.
+  // Below endpoints are allowed for only authenticated users.
   handler.use(asyncHandler(hasSession));
 
   // Check personal sessions.

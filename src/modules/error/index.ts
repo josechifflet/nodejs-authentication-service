@@ -6,11 +6,11 @@ import {
 } from '@prisma/client/runtime/library';
 import type { NextFunction, Request, Response } from 'express';
 import { errors as jose } from 'jose';
+import { ZodError } from 'zod';
 
 import config from '@/config';
 import AppError from '@/util/app-error';
 import sendError from '@/util/send-error';
-import { ZodError } from 'zod';
 
 /**
  * Formats a Zod error into a readable string.
@@ -87,15 +87,20 @@ const handleOperationalErrors = (err: Error) => {
   }
 
   if (err instanceof jose.JWSInvalid) {
-    return new AppError('Failed to verify the headers of the token.', 401);
+    return new AppError('Failed to verify the integrity of the token.', 401);
   }
 
   if (err instanceof jose.JWSSignatureVerificationFailed) {
-    return new AppError('Failed to verify the signature of the token.', 401);
+    return new AppError('Failed to verify the integrity of the token.', 401);
   }
 
   if (err instanceof jose.JWTExpired) {
-    return new AppError('MFA session expired. Please log in again!', 401);
+    return new AppError('Failed to verify the integrity of the token.', 401);
+  }
+
+  // "express-jwt" error.
+  if (err.name === 'UnauthorizedError') {
+    return new AppError('Failed to verify the integrity of the token.', 401);
   }
 
   // If anything is not caught, then it is most likely an unknown error. We will

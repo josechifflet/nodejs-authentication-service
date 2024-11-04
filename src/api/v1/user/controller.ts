@@ -1,8 +1,9 @@
 import type { NextFunction, Request, Response } from 'express';
 
+import CacheService from '@/modules/cache/service';
 import AppError from '@/util/app-error';
 import sendResponse from '@/util/send-response';
-import CacheService from '@/modules/cache/service';
+
 import UserService from './service';
 
 /**
@@ -85,15 +86,10 @@ const UserController = {
     await UserService.updateUser({ userID: id }, { isActive: false });
 
     // Delete all of their sessions.
-    req.session.destroy(async (err) => {
-      if (err) {
-        next(new AppError('Failed to log out. Please try again.', 500));
-        return;
-      }
+    // req.session.destroy(async (err) => {})
+    await CacheService.deleteUserSessions(id);
 
-      await CacheService.deleteUserSessions(id);
-      res.status(204).send();
-    });
+    res.status(204).send();
   },
 
   /**
@@ -121,15 +117,10 @@ const UserController = {
     }
 
     // This shouldn't happen, but let's say if an admin deletes themself...
-    req.session.destroy(async (err) => {
-      if (err) {
-        next(new AppError('Internal server error. Please try again.', 500));
-        return;
-      }
+    // req.session.destroy(async (err) => {})
+    await CacheService.deleteUserSessions(id);
 
-      await CacheService.deleteUserSessions(id);
-      res.status(204).send();
-    });
+    res.status(204).send();
   },
 
   /**

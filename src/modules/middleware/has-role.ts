@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from 'express';
 
-import AppError from '@/util/app-error';
 import UserService from '@/api/v1/user/service';
+import AppError from '@/util/app-error';
 
 /**
  * Checks whether a user does have sufficient privileges / roles to access this endpoint.

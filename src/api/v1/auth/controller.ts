@@ -1,20 +1,22 @@
 import type { NextFunction, Request, Response } from 'express';
 import { nanoid } from 'nanoid';
 
+import UserService from '@/api/v1/user/service';
 import config from '@/config';
 import { generateDefaultTOTP, validateDefaultTOTP } from '@/core/rfc6238';
+import { signEdDSAJWT, signHS256JWT, verifyEdDSAJWT } from '@/core/rfc7519';
 import { parseBasicAuth } from '@/core/rfc7617';
+import CacheService from '@/modules/cache/service';
+import Email from '@/modules/email';
 import AppError from '@/util/app-error';
-import setCookie from '@/util/cookies';
 import getDeviceID from '@/util/device-id';
-import { extractJWT, signJWS, verifyToken } from '@/util/jwt';
+import { extractHeader } from '@/util/headers';
 import { verifyPassword } from '@/util/passwords';
 import randomBytes from '@/util/random-bytes';
 import safeCompare from '@/util/safe-compare';
 import sendResponse from '@/util/send-response';
-import CacheService from '@/modules/cache/service';
-import Email from '@/modules/email';
-import UserService from '@/api/v1/user/service';
+
+import SessionService from '../session/service';
 
 /**
  * Utility function to set `Authenticate` header with the proper `Realm`. Why
@@ -105,7 +107,7 @@ const AuthController = {
 
       // Extract token and validate. From this point on, the user is defined (authenticated)
       // and will be sent back as part of the response (not null as in the previous ones).
-      const token = extractJWT(req);
+      const token = extractHeader(req, 'otp-authorization');
       if (!token) {
         sendUserStatus(req, res, true, false, user);
         return;
@@ -114,7 +116,7 @@ const AuthController = {
       // Verify token.
       let decoded;
       try {
-        decoded = await verifyToken(token);
+        decoded = await verifyEdDSAJWT(token);
       } catch {
         sendUserStatus(req, res, true, false, user);
         return;
@@ -277,37 +279,37 @@ const AuthController = {
     delete filteredUser.confirmationCode;
     delete filteredUser.forgotPasswordCode;
 
-    // Re-generate session to prevent multiple users sharing one session ID.
-    req.session.regenerate((err) => {
-      if (err) {
-        next(new AppError('Failed to initialize a secure session.', 500));
-      }
+    // Device ID and IP address are fetched from the request object.
+    const { device, ip } = getDeviceID(req);
 
-      // Set signed cookies with session information.
-      req.session.userID = user.userID;
-      req.session.lastActive = Date.now().toString();
-      req.session.sessionInfo = getDeviceID(req);
-      req.session.signedIn = Date.now().toString();
+    // Session data:
+    const sessionData = {
+      lastActive: new Date(),
+      signedIn: new Date(),
+      device,
+      ipAddress: ip,
+      userAgent: req.headers['user-agent'] || '',
+    };
 
-      // Remove MFA session cookie if it exists.
-      setCookie({
-        req,
-        res,
-        name: config.JWT_COOKIE_NAME,
-        value: 'loggedOut',
-        maxAge: 10,
-      });
+    // Create session in the database. It generates a randomUUID for the sessionID.
+    const session = await SessionService.createOrUpdateSession(
+      { userPK: user.userPK, userID: user.userID },
+      sessionData,
+    );
 
-      // Send response.
-      sendResponse({
-        req,
-        res,
-        status: 'success',
-        statusCode: 200,
-        data: filteredUser,
-        message: 'Logged in successfully!',
-        type: 'auth',
-      });
+    // Generate Session JWT Token.
+    const age = /* 1 day in minutes */ 60 * 24;
+    const token = await signHS256JWT(session.sessionID, user.userID, age);
+
+    // Send response.
+    sendResponse({
+      req,
+      res,
+      status: 'success',
+      statusCode: 200,
+      data: { user: filteredUser, token },
+      message: 'Logged in successfully!',
+      type: 'auth',
     });
   },
 
@@ -318,31 +320,21 @@ const AuthController = {
    * @param res - Express.js's response object.
    * @param next - Express.js's next function.
    */
-  logout: (req: Request, res: Response, next: NextFunction) => {
-    req.session.destroy((err) => {
-      if (err) {
-        next(new AppError('Failed to log out. Please try again later.', 500));
-        return;
-      }
+  logout: async (req: Request, res: Response) => {
+    // Get the session ID.
+    const { sessionPK } = req.session;
 
-      // Clears all session from cookie.
-      setCookie({
-        req,
-        res,
-        name: config.SESSION_COOKIE,
-        value: 'loggedOut',
-        maxAge: 10,
-      });
+    // Delete the session from the database.
+    await SessionService.deleteSession({ sessionPK });
 
-      sendResponse({
-        req,
-        res,
-        status: 'success',
-        statusCode: 200,
-        data: [],
-        message: 'Logged out successfully!',
-        type: 'auth',
-      });
+    sendResponse({
+      req,
+      res,
+      status: 'success',
+      statusCode: 200,
+      data: [],
+      message: 'Logged out successfully!',
+      type: 'auth',
     });
   },
 
@@ -380,16 +372,16 @@ const AuthController = {
      * Note: Email verification is currently disabled and commented
      * for convenience (this is not the core of the research).
      */
-    // const confirmationCode = await randomBytes();
+    const confirmationCode = await randomBytes();
     const user = await UserService.createUser({
       username,
       email,
       phoneNumber,
       password,
       totpSecret: '', // kept blank to ensure that this gets filled in the service layer
-      confirmationCode: null, // currently disabled
+      confirmationCode,
       forgotPasswordCode: null,
-      isActive: true,
+      isActive: false,
       fullName,
     });
 
@@ -629,31 +621,21 @@ const AuthController = {
     await UserService.updateUser({ userID }, { password: newPassword });
 
     // Send a confirmation email that the user has successfully changed their password.
-    await new Email(user.email, user.fullName).sendUpdatePassword();
+    // await new Email(user.email, user.fullName).sendUpdatePassword();
 
-    // Destroy all sessons for this current user.
-    req.session.destroy(async (err) => {
-      if (err) {
-        next(
-          new AppError('Failed to destroy session. Please contact admin.', 500),
-        );
-        return;
-      }
+    // Delete all of the sessions. We use 'user.userID' as 'req.session.userID'
+    // is not accessible anymore (already deleted in this callback).
+    await SessionService.deleteSession({ userPK: user.userPK });
 
-      // Delete all of the sessions. We use 'user.userID' as 'req.session.userID'
-      // is not accessible anymore (already deleted in this callback).
-      await CacheService.deleteUserSessions(user.userID);
-
-      // Send back response.
-      sendResponse({
-        req,
-        res,
-        status: 'success',
-        statusCode: 200,
-        data: [],
-        message: 'Password updated. For security, please log in again!',
-        type: 'auth',
-      });
+    // Send back response.
+    sendResponse({
+      req,
+      res,
+      status: 'success',
+      statusCode: 200,
+      data: [],
+      message: 'Password updated. For security, please log in again!',
+      type: 'auth',
     });
   },
 
@@ -791,19 +773,10 @@ const AuthController = {
 
     // Generate JWS as the authorization ticket.
     const jti = nanoid();
-    const token = await signJWS(jti, user.userID, 15);
+    const token = await signEdDSAJWT(jti, user.userID, 15);
 
     // Set OTP session by its JTI.
     await CacheService.setOTPSession(jti, user.userID);
-
-    // Set cookie for the JWS.
-    setCookie({
-      req,
-      res,
-      name: config.JWT_COOKIE_NAME,
-      value: token,
-      maxAge: 900000, // 15 minutes
-    });
 
     // Send response.
     sendResponse({

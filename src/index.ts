@@ -1,14 +1,14 @@
 import type { Server } from 'http';
 import toobusy from 'toobusy-js';
 
-import config from './config';
-import bull from './infra/bull';
-import loadExpress from './infra/express';
-import prisma from './infra/prisma';
-import redis from './infra/redis';
-import CacheService from './modules/cache/service';
-import Email from './modules/email';
-import runMigrations from './infra/run-migrations';
+import config from '@/config';
+import bull from '@/infra/bull';
+import loadExpress from '@/infra/express';
+import prisma from '@/infra/prisma';
+import redis from '@/infra/redis';
+import runMigrations from '@/infra/run-migrations';
+import CacheService from '@/modules/cache/service';
+import Email from '@/modules/email';
 
 /**
  * Gracefully shuts down the application server.

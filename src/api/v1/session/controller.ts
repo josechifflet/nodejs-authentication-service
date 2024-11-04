@@ -1,8 +1,10 @@
 import type { NextFunction, Request, Response } from 'express';
 
+import CacheService from '@/modules/cache/service';
 import AppError from '@/util/app-error';
 import sendResponse from '@/util/send-response';
-import CacheService from '@/modules/cache/service';
+
+import SessionService from './service';
 
 /**
  * Handle all requests from 'SessionHandler'.
@@ -18,7 +20,7 @@ const SessionController = {
    */
   deleteMySession: async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
-    const { userID } = req.session;
+    const { userID, sessionPK } = req.session;
 
     if (!userID) {
       next(new AppError('No session detected. Please log in again.', 401));
@@ -33,53 +35,28 @@ const SessionController = {
       return;
     }
 
-    // Delete individual session if it is not the current session.
-    if (req.sessionID !== id) {
-      await CacheService.deleteSession(id);
-      res.status(204).send();
-      return;
-    }
-
     // If the session in question is the current session, delete it by destroying it.
-    req.session.destroy((err) => {
-      if (err) {
-        next(new AppError('Failed to log out. Please try again.', 500));
-        return;
-      }
+    await SessionService.deleteSession({ sessionPK });
 
-      res.status(204).send();
-    });
+    res.status(204).send();
   },
 
   /**
    * Deletes a single session without any validations whatsoever. Intentionally
    * made like this to prevent bad UX (sessions are highly flexible and we can accidentally
-   * delete an invalid session). Either way, all sessions are also handled by `express-session`, so
-   * there's actually no way for this to 'mess up'.
+   * delete an invalid session).
    *
    * @param req - Express.js's request object.
    * @param res - Express.js's response object.
    * @param next - Express.js's next function.
    */
-  deleteSession: async (req: Request, res: Response, next: NextFunction) => {
+  deleteSession: async (req: Request, res: Response) => {
+    // Arbitrary session ID to delete.
     const { id } = req.params;
 
-    // Delete individual session if it is not the current session.
-    if (req.sessionID !== id) {
-      await CacheService.deleteSession(id);
-      res.status(204).send();
-      return;
-    }
+    await SessionService.deleteSession({ sessionID: id });
 
-    // If the session in question is the current session, destroy it.
-    req.session.destroy((err) => {
-      if (err) {
-        next(new AppError('Failed to log out. Please try again.', 500));
-        return;
-      }
-
-      res.status(204).send();
-    });
+    res.status(204).send();
   },
 
   /**

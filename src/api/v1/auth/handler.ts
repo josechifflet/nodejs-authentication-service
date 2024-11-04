@@ -1,11 +1,12 @@
 import { Router } from 'express';
 
-import asyncHandler from '@/util/async-handler';
-import validate from '@/util/validate';
 import bodyParser from '@/modules/middleware/body-parser';
 import hasJWT from '@/modules/middleware/has-jwt';
 import hasSession from '@/modules/middleware/has-session';
 import rateLimit from '@/modules/middleware/rate-limit';
+import asyncHandler from '@/util/async-handler';
+import validate from '@/util/validate';
+
 import AuthController from './controller';
 import AuthValidation from './validation';
 
@@ -32,7 +33,7 @@ const AuthHandler = () => {
   );
 
   // Logs out a single user.
-  handler.post('/logout', AuthController.logout);
+  handler.post('/logout', asyncHandler(hasSession), AuthController.logout);
 
   // Allow user to forgot their own password.
   handler.post(
@@ -81,14 +82,14 @@ const AuthHandler = () => {
     '/update-mfa',
     authRateLimit,
     asyncHandler(hasSession),
-    asyncHandler(hasJWT),
+    asyncHandler(hasJWT('otp-authorization')),
     asyncHandler(AuthController.updateMFA),
   );
 
   // Change password for a logged in user.
   handler.patch(
     '/update-password',
-    rateLimit(2, 'auth-password-update'),
+    // rateLimit(2, 'auth-password-update'),
     asyncHandler(hasSession),
     bodyParser,
     validate(AuthValidation.updatePassword),

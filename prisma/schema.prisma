@@ -34,6 +34,7 @@ model User {
   createdAt          DateTime     @default(now())
   role               Roles        @default(user)
   Attendance         Attendance[]
+  Session            Session?
 }
 
 model Attendance {
@@ -49,4 +50,19 @@ model Attendance {
   remarksLeave   String?
   userPK         Int
   user           User      @relation(fields: [userPK], references: [userPK])
+}
+
+// 1 User : 1 Session
+model Session {
+  sessionPK  Int      @id @default(autoincrement())
+  sessionID  String   @unique @default(uuid())
+  userPK     Int      @unique
+  user       User     @relation(fields: [userPK], references: [userPK])
+  lastActive DateTime
+  signedIn   DateTime
+  device     String
+  ipAddress  String
+  userAgent  String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }

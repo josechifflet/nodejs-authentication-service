@@ -1,12 +1,13 @@
 import { Router } from 'express';
 
-import asyncHandler from '@/util/async-handler';
-import validate from '@/util/validate';
 import bodyParser from '@/modules/middleware/body-parser';
 import hasJWT from '@/modules/middleware/has-jwt';
 import hasRole from '@/modules/middleware/has-role';
 import hasSession from '@/modules/middleware/has-session';
 import rateLimit from '@/modules/middleware/rate-limit';
+import asyncHandler from '@/util/async-handler';
+import validate from '@/util/validate';
+
 import AttendanceController from './controller';
 import AttendanceValidation from './validation';
 
@@ -30,7 +31,7 @@ const AttendanceHandler = () => {
   handler.post(
     '/in',
     attendanceRateLimit,
-    asyncHandler(hasJWT),
+    asyncHandler(hasJWT('otp-authorization')),
     bodyParser,
     validate(AttendanceValidation.in),
     asyncHandler(AttendanceController.in),
@@ -40,7 +41,7 @@ const AttendanceHandler = () => {
   handler.patch(
     '/out',
     attendanceRateLimit,
-    asyncHandler(hasJWT),
+    asyncHandler(hasJWT('otp-authorization')),
     bodyParser,
     validate(AttendanceValidation.out),
     asyncHandler(AttendanceController.out),

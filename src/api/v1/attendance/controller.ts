@@ -1,9 +1,10 @@
 import type { NextFunction, Request, Response } from 'express';
 
+import UserService from '@/api/v1/user/service';
 import AppError from '@/util/app-error';
 import getDeviceID from '@/util/device-id';
 import sendResponse from '@/util/send-response';
-import UserService from '@/api/v1/user/service';
+
 import AttendanceService from './service';
 
 /**

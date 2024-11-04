@@ -1,14 +1,15 @@
 import { Router } from 'express';
 
-import asyncHandler from '@/util/async-handler';
-import validate from '@/util/validate';
-import AttendanceHandler from '../attendance/handler';
 import bodyParser from '@/modules/middleware/body-parser';
 import getMe from '@/modules/middleware/get-me';
 import hasJWT from '@/modules/middleware/has-jwt';
 import hasRole from '@/modules/middleware/has-role';
 import hasSession from '@/modules/middleware/has-session';
 import rateLimit from '@/modules/middleware/rate-limit';
+import asyncHandler from '@/util/async-handler';
+import validate from '@/util/validate';
+
+import AttendanceHandler from '../attendance/handler';
 import UserController from './controller';
 import UserValidation from './validation';
 
@@ -45,7 +46,7 @@ const UserHandler = () => {
   handler.use(
     adminRateLimit,
     asyncHandler(hasRole('admin')),
-    asyncHandler(hasJWT),
+    asyncHandler(hasJWT('otp-authorization')),
   );
 
   // Perform get and create operations on the general entity.

@@ -1,6 +1,7 @@
 # Authentication as a Service
 
 Secure API with OTP and Basic Authentication. Implemented as an API service express application in a unique use-case: attendance system.
+Uses [RFC 7519](https://www.rfc-editor.org/rfc/rfc7519) for session based JSON Web Tokens (JWT).
 
 ## About
 
@@ -50,7 +51,7 @@ As this research focuses on creating a secure API, below are the considerations 
 
 - Users are divided into two roles: `admin` and `user` for clear separation of roles.
 - A special kind of authorized session: `OTPSession`, using JSON Web Tokens (RFC 7519). Having this token means that the user is MFA authenticated. The JSON Web Tokens have a very small lifetime (only about 15 minutes). JSON Web Tokens are powered by `Ed25519` asymmetric algorithm.
-- Sessions are signed cookies with `SHA-1`, implemented with a high-entropy session secret (`genuuid`), and served with secure attributes (`secure`, `sameSite`, `httpOnly`). It is regenerated and refreshed in several instances for security. Sessions can be manually managed by the corresponding user.
+- Sessions are stateless and managed as Bearer JSON Web Tokens (JWTs), signed with a secure, high-entropy session secret using the HS384 or EdDSA algorithm. Tokens contain standard claims (such as exp, iat, iss, and sub) to enforce secure, time-limited access and are refreshed upon authentication. JWTs are passed directly in the Authorization header with each request, eliminating the need for cookies, and can be manually managed by users through token issuance and revocation as needed.
 - Passwords are hashed with `Argon2` algorithm. This means that passwords are not stored in plaintext and in an event the database is stolen, hackers would not be able to look at the plaintext passwords without the knowledge of the real passwords.
 - The secret to generate the OTP is implemented with `nanoid` (it has high entropy and it is a cryptographically secure generator, taking its entropy from the system's hardware noise), and it is different for every other users in the system. Look at `cli/collision-test.ts` for tests.
 - Conforms to RFC 6238 and RFC 7617 (Time-Based One-Time Passwords and Basic Authentication).

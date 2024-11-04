@@ -1,8 +1,8 @@
 import type { LoggerOptions } from 'express-winston';
 import expressWinston from 'express-winston';
 import path from 'path';
-import winston from 'winston';
 import { fileURLToPath } from 'url';
+import winston from 'winston';
 
 import getDeviceID from '@/util/device-id';
 

@@ -2,7 +2,7 @@ import { Prisma } from '@prisma/client';
 import { nanoid } from 'nanoid';
 
 import { generateDefaultTOTP } from '@/core/rfc6238';
-import prisma from '../../../infra/prisma';
+import prisma from '@/infra/prisma';
 import { hashPassword } from '@/util/passwords';
 
 /**

@@ -13,8 +13,8 @@ const isProd = process.env.NODE_ENV === 'production';
  * Intentionally spaced so it is easier to read and find out what is related with what.
  */
 const config = {
-  // Cookie.
-  COOKIE_SECRET: get('COOKIE_SECRET').default('secretvalue').asString(),
+  // JWT Session Secret.
+  JWT_SECRET: get('JWT_SECRET').default('secretvalue').asString(),
 
   // Databases.
   DATABASE: get('DATABASE_URL').required().asString(),
@@ -28,7 +28,6 @@ const config = {
 
   // JWT tokens for second session.
   JWT_AUDIENCE: get('JWT_AUDIENCE').default('users').asString(),
-  JWT_COOKIE_NAME: get('JWT_COOKIE_NAME').default('jwt').asString(),
   JWT_ISSUER: get('JWT_ISSUER').default('api').asString(),
   JWT_PRIVATE_KEY: get('JWT_PRIVATE_KEY')
     .required()
@@ -56,9 +55,6 @@ const config = {
 
   // Ports.
   PORT: get('PORT').default(8080).asPortNumber(),
-
-  // Session cookie name.
-  SESSION_COOKIE: get('SESSION_COOKIE').default('connect.sid').asString(),
 
   // Issuer of the TOTP.
   TOTP_ISSUER: get('TOTP_ISSUER').default('Dev').asString(),

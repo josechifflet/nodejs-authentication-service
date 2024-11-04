@@ -1,3 +1,4 @@
+import { resolve } from 'path';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
@@ -6,5 +7,8 @@ export default defineConfig({
     coverage: {
       exclude: ['**/__tests__/**', '**/__tests_setup__/**', '**/scripts/**'],
     },
+  },
+  resolve: {
+    alias: [{ find: '@', replacement: resolve(__dirname, './src') }],
   },
 });

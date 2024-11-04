@@ -1,9 +1,13 @@
-import cookieParser from 'cookie-parser';
 import express from 'express';
 import helmet from 'helmet';
 import hpp from 'hpp';
 import morgan from 'morgan';
 
+import AttendanceHandler from '@/api/v1/attendance/handler';
+import AuthHandler from '@/api/v1/auth/handler';
+import HealthHandler from '@/api/v1/health/handler';
+import SessionHandler from '@/api/v1/session/handler';
+import UserHandler from '@/api/v1/user/handler';
 import config from '@/config';
 import errorHandler from '@/modules/error';
 import accept from '@/modules/middleware/accept';
@@ -11,15 +15,9 @@ import busyHandler from '@/modules/middleware/busy-handler';
 import favicon from '@/modules/middleware/favicon';
 import { errorLogger, successLogger } from '@/modules/middleware/logger';
 import notFound from '@/modules/middleware/not-found';
-import session from '@/modules/middleware/session';
 import slowDown from '@/modules/middleware/slow-down';
 import xRequestedWith from '@/modules/middleware/x-requested-with';
 import xst from '@/modules/middleware/xst';
-import AttendanceHandler from '@/api/v1/attendance/handler';
-import AuthHandler from '@/api/v1/auth/handler';
-import SessionHandler from '@/api/v1/session/handler';
-import UserHandler from '@/api/v1/user/handler';
-import HealthHandler from '@/api/v1/health/handler';
 
 /**
  * Loads an Express application.
@@ -63,10 +61,6 @@ function loadExpress() {
   // Handle if server is too busy.
   app.use(busyHandler());
 
-  // Load signed cookie parser. JSON parser is loaded in each required
-  // endpoints in a case-by-case basis.
-  app.use(cookieParser(config.COOKIE_SECRET));
-
   // Prevent parameter pollution.
   app.use(hpp());
 
@@ -75,9 +69,6 @@ function loadExpress() {
 
   // Send 204 on icon requests.
   app.use(favicon());
-
-  // Prepare to use Express Sessions.
-  app.use(session());
 
   // Define handlers.
   const attendanceHandler = AttendanceHandler();

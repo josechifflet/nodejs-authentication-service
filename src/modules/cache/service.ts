@@ -5,6 +5,26 @@ import CacheRepository from './repository';
  */
 const CacheService = {
   /**
+   * Setting the session in the Redis cache.
+   * The session ID is the JTI of the Session JWT Token.
+   *
+   * @param sessionID - Session ID.
+   * @param userID - User ID.
+   * @returns Asynchronous 'OK'.
+   */
+  setSession: async (sessionID: string, userID: string) =>
+    CacheRepository.setSession(sessionID, userID),
+
+  /**
+   * Getting the userID from a sessionID. The sessionID is obtained from the Session JWT Token.
+   *
+   * @param sessionID - Session ID.
+   * @returns The userID from the session.
+   */
+  getUserIDFromSession: async (sessionID: string) =>
+    CacheRepository.getSession(sessionID),
+
+  /**
    * Blacklists an OTP using Redis.
    *
    * @param userID - User ID.
